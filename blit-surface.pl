@@ -36,6 +36,7 @@ my $app = SDLx::App->new(
     title        => 'SDLx',
     resizeable   => 1,
     exit_on_quit => 1,
+    delay => 5
 );
 
 my $canvas = SDLx::Surface->new(
