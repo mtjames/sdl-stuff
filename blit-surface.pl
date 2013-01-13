@@ -25,20 +25,18 @@ my $DEBUG = 1;
 my $SCALE = 1;
 my $DISPLAY;
 
-
 # frames per second
-my $fps = 60;
+my $fps      = 60;
 my $timestep = 1.0 / $fps;
-my $realFps = $fps;
-my $frames  = 1;
-my $ticks   = SDL::get_ticks();
-
+my $realFps  = $fps;
+my $frames   = 1;
+my $ticks    = SDL::get_ticks();
 
 # make surfaces
 $DISPLAY = SDL::Video::set_video_mode(
     $DISPLAY_W * $SCALE,
     $DISPLAY_H * $SCALE,
-    undef, undef 
+    undef, undef
 );
 
 # create my main screen
@@ -49,7 +47,6 @@ my $app = SDLx::App->new(
     resizeable   => 1,
     exit_on_quit => 1,
 );
-
 
 $display_surface = SDLx::Surface->new( surface => $DISPLAY );
 
@@ -108,5 +105,4 @@ sub display {
     $frames++;
 
 }
-
 
