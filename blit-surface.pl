@@ -10,7 +10,6 @@ use SDLx::Rect;
 use SDLx::Surface;
 use SDL::GFX::Rotozoom;
 use SDL::Video;
-use SDL::Video;
 use SDL::VideoInfo;
 use SDL::PixelFormat;
 use SDLx::Sprite;
@@ -19,11 +18,9 @@ use SDL::GFX::FPSManager;
 
 my $DISPLAY_W = 200;
 my $DISPLAY_H = 200;
-my $display_surface;
 
 my $DEBUG = 1;
 my $SCALE = 1;
-my $DISPLAY;
 
 # frames per second
 my $fps      = 60;
@@ -31,13 +28,6 @@ my $timestep = 1.0 / $fps;
 my $realFps  = $fps;
 my $frames   = 1;
 my $ticks    = SDL::get_ticks();
-
-# make surfaces
-$DISPLAY = SDL::Video::set_video_mode(
-    $DISPLAY_W * $SCALE,
-    $DISPLAY_H * $SCALE,
-    undef, undef
-);
 
 # create my main screen
 my $app = SDLx::App->new(
@@ -48,7 +38,11 @@ my $app = SDLx::App->new(
     exit_on_quit => 1,
 );
 
-$display_surface = SDLx::Surface->new( surface => $DISPLAY );
+my $canvas = SDLx::Surface->new(
+    surface => SDL::Video::display_format(
+        SDL::Surface->new( SDL_ANYFORMAT, $DISPLAY_W, $DISPLAY_H )
+    )
+);
 
 $app->add_event_handler( \&get_keyboard_input );
 $app->add_show_handler( \&display );
@@ -66,12 +60,7 @@ sub get_keyboard_input {
 
         if ( $key_name eq 'tab' ) {
             $SCALE = $SCALE == 1 ? 3 : 1;
-            $display_surface = SDL::Video::set_video_mode(
-                $DISPLAY_W * $SCALE,
-                $DISPLAY_H * $SCALE,
-                undef, undef
-            );
-
+            $app->resize( $DISPLAY_W * $SCALE, $DISPLAY_H * $SCALE );
         }
     }
 }
@@ -82,7 +71,7 @@ sub display {
 
     my $i = int( rand(255) ) + 1;
     my $color = SDL::Color->new( 255, 0, $i );
-    $app->draw_rect( undef, $color );
+    $canvas->draw_rect( undef, $color );
 
     # calc fps
     if ( $frames % $fps == 0 ) {
@@ -91,12 +80,7 @@ sub display {
         $ticks = $t;
     }
 
-    my $scaled_surface =
-      SDL::GFX::Rotozoom::surface( $display_surface, 0, $SCALE, undef );
-
-    SDL::Video::blit_surface( $scaled_surface,
-        SDL::Rect->new( 0, 0, $scaled_surface->w, $scaled_surface->h ),
-        $display_surface, SDL::Rect->new( 0, 0, 0, 0 ) );
+    $app->blit_by( SDL::GFX::Rotozoom::surface( $canvas, 0, $SCALE, undef ) );
 
     $realFps = sprintf( "%.1f", $realFps );
     $app->draw_gfx_text( [ 10, 10 ], 0xFFFFFFFF, "fps: $realFps" );
