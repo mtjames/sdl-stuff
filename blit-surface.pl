@@ -33,7 +33,14 @@ my $realFps = $fps;
 my $frames  = 1;
 my $ticks   = SDL::get_ticks();
 
-#### $fps
+
+# make surfaces
+$DISPLAY = SDL::Video::set_video_mode(
+    $DISPLAY_W * $SCALE,
+    $DISPLAY_H * $SCALE,
+    undef, undef 
+);
+
 # create my main screen
 my $app = SDLx::App->new(
     w            => $DISPLAY_W,
@@ -42,6 +49,15 @@ my $app = SDLx::App->new(
     resizeable   => 1,
     exit_on_quit => 1,
 );
+
+
+$display_surface = SDLx::Surface->new( surface => $DISPLAY );
+
+$app->add_event_handler( \&get_keyboard_input );
+$app->add_show_handler( \&display );
+$app->run();
+
+#----------------------------------------------------------------
 
 sub get_keyboard_input {
     my ( $event, $app ) = @_;
@@ -56,12 +72,14 @@ sub get_keyboard_input {
             $display_surface = SDL::Video::set_video_mode(
                 $DISPLAY_W * $SCALE,
                 $DISPLAY_H * $SCALE,
-                undef, SDL_SWSURFACE | SDL_RESIZABLE
+                undef, undef
             );
 
         }
     }
 }
+
+#----------------------------------------------------------------
 
 sub display {
 
@@ -91,20 +109,4 @@ sub display {
 
 }
 
-#----------------------------------------------------------------
-
-# make surfaces
-
-$DISPLAY = SDL::Video::set_video_mode(
-    $DISPLAY_W * $SCALE,
-    $DISPLAY_H * $SCALE,
-    8,
-    SDL_HWSURFACE | SDL_HWACCEL | SDL_RLEACCEL | SDL_ASYNCBLIT | SDL_DOUBLEBUF
-);
-
-$display_surface = SDLx::Surface->new( surface => $DISPLAY );
-
-$app->add_event_handler( \&get_keyboard_input );
-$app->add_show_handler( \&display );
-$app->run();
 
