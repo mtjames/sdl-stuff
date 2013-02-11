@@ -87,6 +87,16 @@ my $black = SDL::Color->new( 0,   0,   0 );
 my $grey  = SDL::Color->new( 255, 255, 255 );
 SDL::Video::set_colors( $screen_surface, 0, $black );
 
+
+my @clrs;
+foreach my $i (0..255) {
+
+    $clrs[$i] = SDL::Color->new( 0,   0,   $i );
+
+}
+
+SDL::Video::set_colors( $screen_surface, 0, @clrs );
+
 #p $clr;
 my $clr = SDL::Palette::color_index( $pal, 0 );
 my $i = 0;
