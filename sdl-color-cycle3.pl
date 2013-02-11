@@ -12,10 +12,6 @@ use SDLx::App;
 use Time::HiRes qw( usleep );
 use Data::Printer;
 use SDL::Event;    #Where ever the event call back is processed
-
-
-
-
 our $app = SDLx::App->new(
     w => 200,
     h => 200,
@@ -86,15 +82,8 @@ our $WHITEA  = 0xFFFFFFFF;
 my $black = SDL::Color->new( 0,   0,   0 );
 my $grey  = SDL::Color->new( 255, 255, 255 );
 SDL::Video::set_colors( $screen_surface, 0, $black );
-
-
 my @clrs;
-foreach my $i (0..255) {
-
-    $clrs[$i] = SDL::Color->new( 0,   0,   $i );
-
-}
-
+foreach my $i ( 0 .. 255 ) { $clrs[$i] = SDL::Color->new( 0, 0, $i ); }
 SDL::Video::set_colors( $screen_surface, 0, @clrs );
 
 #p $clr;

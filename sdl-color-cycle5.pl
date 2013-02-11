@@ -12,10 +12,7 @@ use SDLx::App;
 use Time::HiRes qw( usleep );
 use Data::Printer;
 use SDL::Event;    #Where ever the event call back is processed
-
 use Smart::Comments;
-
-
 our $app = SDLx::App->new(
     w => 200,
     h => 200,
@@ -86,19 +83,11 @@ our $WHITEA  = 0xFFFFFFFF;
 my $black = SDL::Color->new( 0,   0,   0 );
 my $grey  = SDL::Color->new( 255, 255, 255 );
 SDL::Video::set_colors( $screen_surface, 0, $black );
-
-
 my @clrs;
-foreach my $i (0..255) {
-
-    $clrs[$i] = SDL::Color->new( 0,   0,   $i );
-
-}
-
+foreach my $i ( 0 .. 255 ) { $clrs[$i] = SDL::Color->new( 0, 0, $i ); }
 SDL::Video::set_colors( $screen_surface, 0, @clrs );
 
 #p $clr;
-
 my $i = 0;
 SDLx::Surface::display( depth => 8 );
 $app->add_event_handler( \&get_keyboard_input );
@@ -110,24 +99,17 @@ sub draw {
 
     #usleep(500000);
 ### aaa
-
-        foreach my $i (0..255) {
-
-            my $clr = SDL::Palette::color_index( $pal, $i );
-
-            SDL::Video::fill_rect( $screen_surface, undef, $clr );
-            SDL::Video::update_rect( $screen_surface, 0, 0, $screen_width,
-                    $screen_height );
-        }
-
-
+    foreach my $i ( 0 .. 255 ) {
+        my $clr = SDL::Palette::color_index( $pal, $i );
+        SDL::Video::fill_rect( $screen_surface, undef, $clr );
+        SDL::Video::update_rect( $screen_surface, 0, 0, $screen_width,
+            $screen_height );
+    }
 
     # SDL::GFX::Primitives::hline_color( $screen_surface, 2, 100 , 20 , $clr);
     # SDL::GFX::Primitives::box_color( $screen_surface, 1, 1, 100, 100 , $clr);
     #SDL::GFX::Primitives::hline_color( $screen_surface, 2, 100 , 20 , $clr);
     # update the whole screen
-
-
 }
 
 sub get_keyboard_input {

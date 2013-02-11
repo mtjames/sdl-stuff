@@ -73,7 +73,8 @@ SDL::Video::set_colors( $screen_surface, 0, $grey );
 #p $clr;
 my $i = 0;
 while (1) {
-#    usleep(500000);
+
+    #    usleep(500000);
     $i = $i == 0 ? 1 : 0;
     warn $i;
     my $clr = SDL::Palette::color_index( $pal, $i );
@@ -81,7 +82,7 @@ while (1) {
 
    #    SDL::GFX::Primitives::hline_color( $screen_surface, 2, 100 , 20 , $clr);
    # update the whole screen
-    #SDL::Video::fill_rect( $screen_surface, undef, $clr );
-
-    SDL::Video::update_rect( $screen_surface, 0, 0, $screen_width,  $screen_height );
+   #SDL::Video::fill_rect( $screen_surface, undef, $clr );
+    SDL::Video::update_rect( $screen_surface, 0, 0, $screen_width,
+        $screen_height );
 }
