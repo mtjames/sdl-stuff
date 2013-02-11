@@ -8,65 +8,45 @@ use SDL::Rect;
 use SDL::Color;
 use SDL::Palette;
 use SDL::GFX::Primitives;
-use SDLx::App;
+
+#use SDLx::App;
 use Time::HiRes qw( usleep );
 use Data::Printer;
 use SDL::Event;    #Where ever the event call back is processed
 use Smart::Comments;
 use Data::Printer;
 use Data::Dumper;
-our $app = SDLx::App->new(
-    dt           => .5,
-    min_t        => .5,
-    depth        => 8,
-    delay        => 2,
-    resizeable   => 1,
-    exit_on_quit => 1,
-);
+use SDL ':init';
+use SDL::Event;
+use SDL::Events ':all';
+SDL::init(SDL_INIT_VIDEO)
+  ;                # Event can only be grabbed in the same thread as this
 
 # the size of the window box or the screen resolution if fullscreen
 my $screen_width  = 640;
 my $screen_height = 480;
 my $x             = 0;
-SDL::init(SDL_INIT_VIDEO);
 
 # setting video mode
 my $screen_surface =
   SDL::Video::set_video_mode( $screen_width, $screen_height, 8,
-    SDL_HWSURFACE | SDL_HWPALETTE );
-
-#my $set_colors = SDL::Video::set_colors( $screen_surface, 0  , $BROWNA, $GREENA  );
-my $format = $screen_surface->format;
-my $pal    = $screen_surface->format->palette;
-my $btpp   = $screen_surface->format->BitsPerPixel;
-my $bypp   = $screen_surface->format->BytesPerPixel;
-
-#my $color  = SDL::Color->new( 255, 0, 100 );
-# my $aa = SDL::Palette::ncolors();
-#warn $aa ;
-warn '-------------------------';
-p $format;
-warn '-------------------------';
-p $pal;
-warn '-------------------------';
-p $btpp;
-warn '-------------------------';
-p $bypp;
-warn '-------------------------';
-warn $pal->ncolors;
-my @b = SDL::Palette::colors($pal);
+    SDL_SWSURFACE | SDL_HWPALETTE );
 my @clrs;
 foreach my $i ( 0 .. 255 ) { $clrs[$i] = SDL::Color->new( $x, 0, $i ); }
 my $img = SDL::Image::load('fractal.gif');
-$app->blit_by( $img, undef, undef );
-$app->flip();
 
-# -----------------------------------
-$app->add_event_handler( \&get_keyboard_input );
-$app->add_move_handler( \&draw );
+#$app->blit_by( $img, undef, undef );
+SDL::Video::blit_surface( $img, undef, $screen_surface, undef );
+my $event = SDL::Event->new();    # notices 'Event' ne 'Events'
+while (1) {
+    SDL::Events::pump_events();
+    while ( SDL::Events::poll_event($event) ) {
 
-#$app->add_show_handler( sub { $app->update() } );
-$app->run();
+        #check by event type
+        exit if $event->type == SDL_QUIT;
+    }
+    draw();
+}
 
 # -----------------------------------
 sub draw {
