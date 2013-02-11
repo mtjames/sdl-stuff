@@ -1,8 +1,5 @@
 use SDL;
-  use SDLx::App;
-
-
-
+use SDLx::App;
 use Modern::Perl;
 use SDL;
 use SDL::Video;
@@ -11,15 +8,10 @@ use SDL::Rect;
 use SDL::Color;
 use SDL::Palette;
 use SDL::GFX::Primitives;
-
 use SDLx::App;
-
 use Time::HiRes qw( usleep );
 use Data::Printer;
-
-  use SDL::Event; #Where ever the event call back is processed
-
-
+use SDL::Event;    #Where ever the event call back is processed
 our $app = SDLx::App->new(
     w => $DISPLAY_W,
     h => $DISPLAY_H,
@@ -32,18 +24,12 @@ our $app = SDLx::App->new(
     exit_on_quit => 1,
 );
 
-
-
-
 # the size of the window box or the screen resolution if fullscreen
 my $screen_width  = 800;
 my $screen_height = 600;
 our $BROWNA = 0x973914FF;
 our $GREENA = 0x00FF00FF;
 SDL::init(SDL_INIT_VIDEO);
-
-
-
 
 # setting video mode
 my $screen_surface =
@@ -100,29 +86,13 @@ SDL::Video::set_colors( $screen_surface, 0, $black );
 #p $clr;
 my $clr = SDL::Palette::color_index( $pal, 0 );
 my $i = 0;
-
-
-
-
-
 SDLx::Surface::display( depth => 8 );
-
-
 $app->add_event_handler( \&get_keyboard_input );
+$app->add_move_handler( \&draw );
+$app->add_show_handler( sub { $app->update() } );
+$app->run();
 
-  $app->add_move_handler( \&draw );
-
-
-
-$app->add_show_handler( sub{ $app->update() } );
-
-  $app->run();
-
-
-
-  sub draw {
-
-
+sub draw {
 
     #usleep(500000);
     $i = $i == 0 ? 1 : 0;
@@ -137,13 +107,7 @@ $app->add_show_handler( sub{ $app->update() } );
     SDL::Video::fill_rect( $screen_surface, undef, $clr );
     SDL::Video::update_rect( $screen_surface, 0, 0, $screen_width,
         $screen_height );
-
-
-  }
-
-
-
-
+}
 
 sub get_keyboard_input {
     my ( $event, $app ) = @_;
@@ -151,8 +115,5 @@ sub get_keyboard_input {
         my $key_name = SDL::Events::get_key_name( $event->key_sym );
         $app->stop() if $key_name =~ /^q$/;
         $app->stop() if $key_name =~ /escape/;
-
-
-
     }
 }
