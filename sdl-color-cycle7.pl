@@ -20,8 +20,8 @@ use Data::Dumper;
 
 our $app = SDLx::App->new(
 
-#    dt           => .5  ,
-#    min_t => .5,
+    dt           => .5  ,
+    min_t => .5,
 
     depth => 8,
     delay        => 2,
@@ -40,7 +40,7 @@ SDL::init(SDL_INIT_VIDEO);
 
 # setting video mode
 my $screen_surface =
-  SDL::Video::set_video_mode( $screen_width, $screen_height, 8, SDL_HWPALETTE );
+  SDL::Video::set_video_mode( $screen_width, $screen_height, 8, SDL_HWSURFACE| SDL_HWPALETTE );
 
 #my $set_colors = SDL::Video::set_colors( $screen_surface, 0  , $BROWNA, $GREENA  );
 my $format = $screen_surface->format;
@@ -65,39 +65,15 @@ warn $pal->ncolors;
 my @b = SDL::Palette::colors($pal);
 
 
-#--------------------------------------------
-
-# SDLx::Surface::display( depth => 8 );
-
-### aaa
 
 my @clrs;
 foreach my $i (0..255) {
     $clrs[$i] = SDL::Color->new( $x,   0,   $i );
-#    my @a = ( 0,   0,   $i );
-#    p @a;
-#    warn Dumper @a;
-#    $clrs[$i] = @a;
-
-#    p $clrs[$i];
 
 }
 
 
-### aaa
-#p @clrs;
-#warn Dumper @clrs;
-
-SDL::Video::set_colors( $screen_surface, 0, @clrs );
-#SDL::Video::set_colors( $screen_surface, 0,  0xFF00FF   );
-#SDL::Video::set_colors( $screen_surface, 0,  0xFF00FF   );
-
-
-
-
-
 my $img = SDL::Image::load( 'fractal.gif' );
-
 $app->blit_by( $img, undef, undef  );
 $app->flip();
 
@@ -105,7 +81,7 @@ $app->flip();
 # -----------------------------------
 $app->add_event_handler( \&get_keyboard_input );
 $app->add_move_handler( \&draw );
-$app->add_show_handler( sub { $app->update() } );
+#$app->add_show_handler( sub { $app->update() } );
 $app->run();
 
 # -----------------------------------
@@ -114,19 +90,18 @@ sub draw {
         my @clrs;
         foreach my $i (0..255) {
             $clrs[$i] = SDL::Color->new( $x,   0,   $i );
-        #    my @a = ( 0,   0,   $i );
-        #    p @a;
-        #    warn Dumper @a;
-        #    $clrs[$i] = @a;
 
-        #    p $clrs[$i];
 
         }
-        SDL::Video::set_colors( $screen_surface, 0, @clrs );
+
+
+        my $rc =  SDL::Video::set_palette( $screen_surface,  SDL_PHYSPAL  ,  0, @clrs );
+
 
         $x++;
 
         $x = 0 if $x == 255;
+        warn $x;
 
 }
 
