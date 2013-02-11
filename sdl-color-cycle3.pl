@@ -12,9 +12,13 @@ use SDLx::App;
 use Time::HiRes qw( usleep );
 use Data::Printer;
 use SDL::Event;    #Where ever the event call back is processed
+
+
+
+
 our $app = SDLx::App->new(
-    w => $DISPLAY_W,
-    h => $DISPLAY_H,
+    w => 200,
+    h => 200,
 
     #    dt           => .5  ,
     #    min_t => .5,
